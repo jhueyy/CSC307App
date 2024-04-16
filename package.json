@@ -13,5 +13,8 @@
   "description": "",
   "dependencies": {
     "create-vite": "^5.2.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
