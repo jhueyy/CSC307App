@@ -38,28 +38,69 @@ app.use(cors());
 app.use(express.json());
 
 const addUser = (user) => {
-  users["users_list"].push(user);
-  return user;
+  const userWithID = generateID(user);
+  //users["users_list"].push(user);
+  users["users_list"].push(userWithID);
+  //return user;
+
+  return userWithID;
 };
+
+
+const generateID = (user) => {
+  let randomID;
+  let idExists = false;
+  
+  while (!idExists) {
+    const alphabeticPart = Math.random().toString(36).substr(2, 3);
+    const numericPart = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+
+    randomID = alphabeticPart + numericPart;
+
+    const existingUser = users["users_list"].find(u => u.id === randomID);
+    if (!existingUser) {
+      idExists = true;
+    }
+  }
+  const userWithID = {
+    id: randomID,
+    name: user.name,
+    job: user.job
+  };
+  
+  return userWithID;
+};
+
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
-  addUser(userToAdd);
-  res.send();
+  //addUser(userToAdd);
+  const userWithID = addUser(userToAdd);
+  //res.send();
+  res.status(201).json(userWithID);
 });
 
-const deleteUser = (user) => {
-  const indexToDelete = users["users_list"].findIndex(u => u.id === user.id);
-
+const deleteUserById = (id) => {
+  const indexToDelete = users.users_list.findIndex((user) => user.id === id);
   if (indexToDelete !== -1) {
-    users["users_list"].splice(indexToDelete, 1);
-}};
+    users.users_list.splice(indexToDelete, 1);
+  }
+};
+
 
 app.delete("/users", (req, res) =>{
   const userToDelete = req.body;
   deleteUser(userToDelete);
   res.send("User Deleted Successfully");
 });
+
+// DELETE endpoint to delete user by ID
+app.delete("/users/:id", (req, res) => {
+  const id = req.params.id;
+  deleteUserById(id);
+  res.status(204).send();
+});
+
 
 const findUserByName = (name) => {
   return users["users_list"].filter(
@@ -108,4 +149,5 @@ app.listen(port, () => {
     `Example app listening at http://localhost:${port}`
   );
 });
+
 
