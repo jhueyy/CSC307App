@@ -13,7 +13,8 @@
   ],
   "description": "",
   "dependencies": {
-    "create-vite": "^5.2.3"
+    "create-vite": "^5.2.3",
+    "mongoose": "^8.3.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
